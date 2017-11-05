@@ -2,3 +2,5 @@ audio/*.mp3
 memrise.db
 memrise.txt
 vocab.db
+variables.py
+*.pyc

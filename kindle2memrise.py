@@ -35,9 +35,9 @@ class Translation(object):
 		desc = definition = example = pronunciation = audiofileURL = None			
 			
 		try:
-			desc = soup.find(attrs={"class": "trans"}).get_text().strip().capitalize()
+			translation = soup.find(attrs={"class": "trans"}).get_text().strip()
 		except:
-			desc = None
+			translation = None
 			
 		try:
 			definition = soup.find(attrs={"class": "def"}).get_text().strip().capitalize()
@@ -47,56 +47,50 @@ class Translation(object):
 		try:
 			example = soup.find(attrs={"title": "Example"}).get_text().strip()
 		except:
-			example = "N/A"
+			example = None
 			
 		try:
 			pronunciation = soup.find(attrs={"class": "ipa"}).get_text().strip()
 		except:
-			pronunciation = ""
+			pronunciation = None
 			
 		try:
 			audiofileURL = soup.find(attrs={"data-src-mp3": True}).attrs['data-src-mp3']
 		except:
 			audiofileURL = None	
-			
+		
+		if(translation == None):
+			translation = definition
+			definition = None
 			
 		print("\n\033[1m%s:\033[0m" % term)
-		print("\t>> %s. %s" % (desc, definition) )
+		print("\t>> %s" % translation )
 		
+		print("\n[-] Definition:")
+		print("\t%s\n" % definition)
+
 		print("\n[-] Example:")
-		print("\t{example}\n".format(example=example))
+		print("\t%s\n" % example)
 
 		print("\n[-] Pronunciation:")
-		print("\t{pronunciation}\n".format(pronunciation=pronunciation))
+		print("\t%s\n" % pronunciation)
 		
 		print("\n[-] Audio URL:")
-		print("\t{url}\n".format(url=audiofileURL))
+		print("\t%s\n" % audiofileURL)
 		
-		if(definition != None):
-			if(desc != None):
-				self.definition = desc + ". " + definition + ". Example: " + example
-			else:
-				self.definition = definition + ". Example: " + example
-				
+		self.translation = translation
+		
+		self.definition = definition
+		self.example = example
+		
 		self.pronunciation = pronunciation
 		self.audiofileURL = audiofileURL
 		
 		self.audiofilePath = downloadAudioFile(audiofileURL, term)
 
-	def __init__(self, word, definition, pronunciation, partofdpeech, gender, audiofileURL, audiofilePath):
-		self.word = word
-		self.definition = definition
-		self.pronunciation = pronunciation
-		self.partofdpeech = partofdpeech
-		self.gender = gender
-		self.audiofileURL = audiofileURL
-		self.audiofilePath = audiofilePath
-		
-		self.translate()
-	
-
 	def __init__(self, word):
 		self.word = word
+		self.translation = None
 		self.definition = None		
 		self.pronunciation = None
 		self.partofdpeech = None
@@ -136,7 +130,7 @@ def translate(kindleDBFilename, dictionaryDBFilename, outputFilename, outputRevi
 	dictionaryDB = DatabaseManager(dictionaryDBFilename)
 	
 	
-	dictionaryDB.query("CREATE TABLE IF NOT EXISTS dictionary (word TEXT UNIQUE, definition TEXT, pronunciation TEXT, partofdpeech TEXT, gender TEXT, audiofileURL TEXT, audiofilePath TEXT, revision INTEGER)")
+	dictionaryDB.query("CREATE TABLE IF NOT EXISTS dictionary (word TEXT UNIQUE, translation TEXT, definition TEXT, example TEXT, pronunciation TEXT, partofdpeech TEXT, gender TEXT, audiofileURL TEXT, audiofilePath TEXT, revision INTEGER)")
 	
 	try:
 		revisions = dictionaryDB.query("SELECT MAX(revision) FROM dictionary")
@@ -167,10 +161,12 @@ def translate(kindleDBFilename, dictionaryDBFilename, outputFilename, outputRevi
 			
 			translated = Translation(word)
 			
-			dictionaryDB.query("INSERT INTO dictionary VALUES (?, ?, ?, ?, ?, ?, ?, ?)", 
+			dictionaryDB.query("INSERT INTO dictionary VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
 			[
 				translated.word, 
+				translated.translation,
 				translated.definition,
+				translated.example,				
 				translated.pronunciation,
 				translated.partofdpeech,
 				translated.gender,
@@ -179,7 +175,7 @@ def translate(kindleDBFilename, dictionaryDBFilename, outputFilename, outputRevi
 				revision
 			] )
 
-			if(translated.definition != None):
+			if(translated.translation != None):
 				newWords += 1
 		except sqlite3.Error as e:
 				print("Skipping.... %s" % e)
@@ -197,7 +193,7 @@ def translate(kindleDBFilename, dictionaryDBFilename, outputFilename, outputRevi
 
 	outputMemrise(dictionaryDB, revision, outputFilename)
 	
-	dictionaryDB.query("DELETE FROM dictionary WHERE word=?", [ "retorted" ]);
+	# dictionaryDB.query("DELETE FROM dictionary WHERE word=?", [ "retorted" ]);
 
 	dictionaryDB.close()
 	kindleDB.close()
@@ -208,7 +204,7 @@ def outputMemrise(dictionaryDB, revision, outputFilename):
 	
 	try:
 		with open(outputFilename, 'w') as f:
-			cursor = dictionaryDB.query("SELECT word, definition, pronunciation, partofdpeech, gender FROM  dictionary WHERE definition IS NOT NULL AND revision >= ?", [revision])
+			cursor = dictionaryDB.query("SELECT word, translation, definition, example, pronunciation, partofdpeech, gender FROM  dictionary WHERE definition IS NOT NULL AND revision >= ?", [revision])
 			
 			while True:
 				row = cursor.fetchone()
@@ -253,8 +249,8 @@ def main():
 	parser.add_argument('-kindleDB', help="Kindle vocabulary db filename (default: vocab.db)", default="vocab.db")
 	parser.add_argument('-dictionaryDB', help="Memrise dictionary db filename (default: memrise.db)", default="memrise.db")
 	parser.add_argument('-output', help="Output file to import to memrise.com (default: memrise.txt)", default="memrise.txt")	
-	parser.add_argument('-revision', type=int, help="Revision to output. Not specfied (default): last, 0 - all ", default="-1")
-	parser.add_argument('-debug', action='store_true', help="Enable debug ", default=False)	
+	parser.add_argument('-revision', type=int, help="Revision to output. Not specfied (default): last, 0 - all", default="-1")
+	parser.add_argument('-debug', action='store_true', help="Enable debug", default=False)	
  
 	args = parser.parse_args()
 

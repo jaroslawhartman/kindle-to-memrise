@@ -26,7 +26,7 @@ For my self-education I use [http://memrise.com/](http://memrise.com/) (both on 
 
 I heavily sourced from two GitHub projects:
 
-* [cambridge-cli](https://github.com/pasternak/cambridge-cli/blob/master/cambridge-cli.py)
+* [cambridge-cli](https://github.com/pasternak/cambridge-cli)
 * [bulk-audio-upload](https://github.com/DrewSSP/bulk-audio-upload)
 * [http://jhartman.pl](http://jhartman.pl)
 
@@ -73,6 +73,19 @@ This is the file, which will be used for [bulk word add](http://feedback.memrise
 
 ## Bulk word add
 
+Create a new Course.
+
+In the course, add two new columns: **Definition** and **Example**.
+
+Edit settings for both of new columns, edit attributes:
+
+* *Definition* - edit settings:
+	* *Display* - only _Show after tests_ is selected 
+	* *Testing* - all options unselected
+* *Example* - edit settings:
+	* *Display* - all options unselected
+	* *Testing* - only _Tapping Tests Enabled_ is selected 
+
 Go to your Course, press Edit and in the Advanced options, look for _Bulk add words_:
 
 ![Bulk Add words](http://jhartman.pl/files/memrise/01%20-%20memrise.png)
@@ -80,6 +93,8 @@ Go to your Course, press Edit and in the Advanced options, look for _Bulk add wo
 Open `memrise.txt` in an editor (e.g. Notepad), select all, copy it and paste into Memrise Bulk Add form then press _Add_:
 
 ![Bulk Add words](http://jhartman.pl/files/memrise/02%20-%20memrise.png)
+
+That's it!
 
 
 
