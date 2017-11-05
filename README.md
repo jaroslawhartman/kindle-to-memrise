@@ -40,7 +40,7 @@ I heavily sourced from two GitHub projects:
 
 * [cambridge-cli](https://github.com/pasternak/cambridge-cli)
 * [bulk-audio-upload](https://github.com/DrewSSP/bulk-audio-upload)
-* [http://jhartman.pl](http://jhartman.pl)
+* [http://jhartman.pl](http://jhartman.pl/2017/11/05/kindle-vocabulary-builder-into-memrise/)
 
 
 ## ToDOs
