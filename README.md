@@ -40,6 +40,15 @@ I heavily sourced from two GitHub projects:
 
 * [cambridge-cli](https://github.com/pasternak/cambridge-cli)
 * [bulk-audio-upload](https://github.com/DrewSSP/bulk-audio-upload)
+
+Also, I was using these documents and toold:
+
+* [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
+* [requests](http://requests.readthedocs.io/en/master/user/quickstart/)
+* [Edit This Cookie!](https://chrome.google.com/webstore/detail/editthiscookie/)
+
+And finally, my webpage:
+
 * [http://jhartman.pl](http://jhartman.pl/2017/11/05/kindle-vocabulary-builder-into-memrise/)
 
 
@@ -108,7 +117,22 @@ Open `memrise.txt` in an editor (e.g. Notepad), select all, copy it and paste in
 
 # Usage `uploadAudio.py`
 
-1. Login to the memrise and export cookies (using Chrome 
+```
+usage: uploadAudio.py [-h] [-dictionaryDB DICTIONARYDB] [-revision REVISION]
+                      [-course COURSE] [-debug]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -dictionaryDB DICTIONARYDB
+                        Memrise dictionary db filename (default: memrise.db)
+  -revision REVISION    Revision to output. Not specfied (default): last, 0 -
+                        all
+  -course COURSE        Memrise course ID
+  -debug                Enable debug
+```
+
+1. Login to the memrise and export cookies (using Chrome [Edit This Cookie!](https://chrome.google.com/webstore/detail/editthiscookie/) extension)
+2. TBD
 
 
 
