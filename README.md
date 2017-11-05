@@ -2,7 +2,9 @@
 
 ## Introduction
 
-A script to pull Kindle Vocabulary Builder DB and convert into Memrise course.
+A script to pull Kindle Vocabulary Builder DB and convert into Memrise course (`kindle2memrise.py`)
+
+Another script (`uploadAudio.py`) can upload audio mp3s to the course.
 
 The latest Kindle Paperwhite (second generation) offers the Vocabulary Builder feature. With Vocabulary Builder, you can look up words with the dictionary and memorize their definitions.
 
@@ -10,10 +12,19 @@ For my self-education I use [http://memrise.com/](http://memrise.com/) (both on 
 
 ## How does it work?
 
+### Create course (`kindle2memrise.py`)
+
 1. The script reads through the vocab.db to look for all Engligh words (in table WORDS).
 2. Each of the words (aka _stems_) is used for a definition lookup in the [Cambridge Dictionary](https://dictionary.cambridge.org/)
 3. Retreve word definitions, usage example, pronounciation, audio mp3 and insert into a new SQLite database `memrise.db` (the mp3 is written to the disk only, folder `audio`) 
 4. Each new word is written to a text file, in a format suitable for bulk words import into Memrise.
+
+### Upload audio files (`uploadAudio.py`)
+
+1. Get list of all words from the course
+2. If a word still does not have any audio file...
+3. ...retireves mp3 filename from the DB created in the 1st stage
+4. Uploads the mp3 to Memrise
 
 ## Pre-requisties
 
@@ -21,6 +32,7 @@ For my self-education I use [http://memrise.com/](http://memrise.com/) (both on 
 * `vocab.db` file (retrieved from your Kindle, from `/Volumes/Kindle/system/vocabulary/`)
 * python 3
 * BeautifulSoup
+* requests
 
 ## References
 
@@ -36,9 +48,9 @@ I heavily sourced from two GitHub projects:
 * Parametrize hardcoded things - especially language pair English-Polish
 * Upload Audio files with prononciation 
 
-# Usage
+# Usage `kindle2memrise.py`
 
-## DB conversion using the script
+## DB conversion
 
 ```
 MBP:kindle-to-memrise jhartman$ ./kindle2memrise.py -h
@@ -94,7 +106,9 @@ Open `memrise.txt` in an editor (e.g. Notepad), select all, copy it and paste in
 
 ![Bulk Add words](http://jhartman.pl/files/memrise/02%20-%20memrise.png)
 
-That's it!
+# Usage `uploadAudio.py`
+
+1. Login to the memrise and export cookies (using Chrome 
 
 
 
